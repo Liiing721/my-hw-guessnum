@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f0f2f5;
+        font-family: Arial, sans-serif;
+      }
+
+      .game-container {
+        background-color: wheat;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .container {
+        width: 280px;
+        margin-top: 20px;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        gap: 5px;
+      }
+
+      .col {
+        display: inline-block;
+        width: calc(33.33% - 5px);
+        padding: 15px 0;
+        height: 2em;
+        line-height: 2em;
+        text-align: center;
+
+        border-radius: 50%;
+        background-color: lightblue;
+        font-weight: bold;
+      }
+
+      /* .col:hover {
+        background-color: #3498db;
+        color: white;
+        transform: scale(1.05);
+      } */
+
+      .col:last-child {
+        width: 100%;
+        order: 0;
+      }
+
+      .guessInput {
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #3fa9e6;
+        border-radius: 5px;
+        margin-right: 10px;
+        width: 150px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 5px;
+      }
+
+      .guess-btn {
+        background-color: #2ecc71;
+        color: white;
+      }
+
+      .guess-btn:hover {
+        background-color: #24a158;
+      }
+
+      .show-answer-btn {
+        background-color: rgb(221, 78, 78);
+        color: white;
+      }
+
+      .show-answer-btn:hover {
+        background-color: #b53628;
+      }
+
+      .answer {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        color: #2c3e50;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <input type="text" class="guessInput" placeholder="請輸入數字" />
+      <button class="btn guess-btn">猜！</button>
+      <button class="btn show-answer-btn">看答案</button>
+      <div class="answer"></div>
+      <div class="container">
+        <div class="row panel">
+          <div class="col" data-num="1">一</div>
+          <div class="col" data-num="2">二</div>
+          <div class="col" data-num="3">三</div>
+          <div class="col" data-num="4">四</div>
+          <div class="col" data-num="5">五</div>
+          <div class="col" data-num="6">六</div>
+          <div class="col" data-num="7">七</div>
+          <div class="col" data-num="8">八</div>
+          <div class="col" data-num="9">九</div>
+          <div class="col" data-num="0">零</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const guessInput = document.querySelector(".guessInput");
+      const guessBtn = document.querySelector(".guess-btn");
+      const answerDisplay = document.querySelector(".answer");
+      const panel = document.querySelector(".panel");
+      const showAnswerBtn = document.querySelector(".show-answer-btn");
+      let answer;
+      let min = 1;
+      let max = 100;
+
+      function getRandomIntInclusive(min, max) {
+        const minCeiled = Math.ceil(min);
+        const maxFloored = Math.floor(max);
+        return Math.floor(
+          Math.random() * (maxFloored - minCeiled + 1) + minCeiled
+        ); // 最大值和最小值都包含
+      }
+
+      function displayAns() {
+        answerDisplay.textContent = `請輸入 ${min} ~ ${max} 之間的整數`;
+      }
+      //產出1-100之間的隨機整數
+      answer = getRandomIntInclusive(min, max);
+
+      // answerDisplay.textContent = `請輸入 ${min} ~ ${max} 之間的整數`;
+      displayAns();
+
+      guessBtn.addEventListener("click", function () {
+        let guessNum = guessInput.value;
+
+        //判斷是不是數字
+        if (isNaN(guessNum)) {
+          alert("請輸入數字!");
+          return;
+        }
+
+        //轉成數字
+        guessNum = parseInt(guessNum);
+
+        if (guessNum === answer) {
+          alert(`猜中了！答案是: ${answer}`);
+          //early return
+          return;
+        }
+
+        if (guessNum > max || guessNum < min) {
+          alert("輸入有問題");
+          return;
+        }
+
+        if (guessNum > answer) {
+          max = guessNum;
+        } else {
+          min = guessNum;
+        }
+
+        displayAns();
+      });
+
+      guessBtn.addEventListener("click", function () {
+        let guessNum = guessInput.value;
+
+        //判斷是不是數字
+        if (isNaN(guessNum)) {
+          alert("請輸入數字!");
+          return;
+        }
+
+        //轉成數字
+        guessNum = parseInt(guessNum);
+
+        if (guessNum === answer) {
+          alert(`猜中了！答案是: ${answer}`);
+          return;
+        }
+
+        if (guessNum > max || guessNum < min) {
+          alert("輸入有問題");
+          return;
+        }
+
+        if (guessNum > answer) {
+          max = guessNum;
+        } else {
+          min = guessNum;
+        }
+
+        displayAns();
+        guessInput.value = "";
+      });
+      //事件委派來處理數字按鈕的click後的邏輯
+      panel.addEventListener("click", function (e) {
+        const numBtn = e.target;
+        const numVal = numBtn.getAttribute("data-num");
+        guessInput.value += numVal;
+      });
+
+      showAnswerBtn.addEventListener("click", function () {
+        alert(`答案是：${answer}`);
+      });
+
+      function random(number) {
+        return Math.floor(Math.random() * number);
+      }
+      const cols = document.querySelectorAll(".col");
+
+      function random(number) {
+        return Math.floor(Math.random() * number);
+      }
+
+      panel.addEventListener("mouseover", function (e) {
+        const target = e.target;
+        if (target.classList.contains("col")) {
+          const rgbColor = `rgb(${random(255)}, ${random(255)}, ${random(
+            255
+          )})`;
+          target.style.backgroundColor = rgbColor;
+
+          // 調整字色
+          const [r, g, b] = rgbColor.match(/\d+/g).map(Number); //用正則表達式 \d+（代表一個以上的數字）去抓出所有數字，g 表示全域搜尋
+          const brightness = (r + g + b) / 3;
+          target.style.color = brightness < 128 ? "white" : "black";
+          target.style.transform = "scale(1.05)";
+        }
+      });
+
+      panel.addEventListener("mouseout", function (e) {
+        const target = e.target;
+        if (target.classList.contains("col")) {
+          target.style.backgroundColor = "";
+          target.style.color = "";
+          target.style.transform = "";
+        }
+      });
+    </script>
+  </body>
+</html>
